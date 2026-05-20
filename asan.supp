@@ -1,0 +1,9 @@
+interceptor_via_lib:libxcb-cursor.so
+interceptor_via_lib:libxcb.so
+interceptor_via_lib:libX11.so
+interceptor_via_lib:libQt6Core.so
+interceptor_via_lib:libQt6Gui.so
+interceptor_via_lib:libQt6Widgets.so
+interceptor_via_lib:libQt6DBus.so
+interceptor_via_lib:libQt6Test.so
+

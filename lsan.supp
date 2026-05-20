@@ -1,0 +1,10 @@
+leak:libGL
+leak:libxcb-cursor
+leak:libxcb
+leak:libX11
+leak:libQt6Core
+leak:libQt6Gui
+leak:libQt6Widgets
+leak:libQt6DBus
+leak:libQt6Test
+leak:libfontconfig

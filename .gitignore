@@ -1,0 +1,9 @@
+.qtcreator/
+
+build/
+
+*.png
+
+*.jpg
+
+*.jpeg

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 4.3)
 project(seapp
         VERSION 2026.5.18
         LANGUAGES CXX
-        DESCRIPTION "FOr Learning!"
+        DESCRIPTION "For Learning!"
 )
 
 set(CMAKE_CXX_STANDARD 26)

@@ -1,0 +1,3 @@
+#define seapp_VERSION_MAJOR @seapp_VERSION_MAJOR@
+#define seapp_VERSION_MINOR @seapp_VERSION_MINOR@
+#define seapp_VERSION_PATCH @seapp_VERSION_PATCH@

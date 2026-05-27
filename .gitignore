@@ -10,4 +10,4 @@ build/
 
 *.mp4
 
-cmd-args.txt
+*.txt

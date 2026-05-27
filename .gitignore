@@ -9,3 +9,5 @@ build/
 *.jpeg
 
 *.mp4
+
+cmd-args.txt

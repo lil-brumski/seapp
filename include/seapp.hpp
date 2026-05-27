@@ -3,7 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <argparse/argparse.hpp>
-#include <Eigen/Core>
+#include <Eigen/Dense>
 
 void ImageFn(const std::string& image);
 void VideoFn(std::string video);

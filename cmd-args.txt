@@ -1,1 +1,0 @@
---image /home/brumski/CLionProjects/seapp/kde-plasma.png  --video /home/brumski/CLionProjects/seapp/meme-video.mp4

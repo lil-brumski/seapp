@@ -13,28 +13,39 @@ auto main(int argc, char** argv) -> int {
     argparse::ArgumentParser program("seapp", pv);
 
 #ifdef WITH_OPENCV
-    program.add_argument("-i", "--image")
+    auto compv = argparse::ArgumentParser("compvn", pv);
+    compv.add_description("For computer vision related tasks");
+
+    compv.add_argument("-i", "--image")
         .help("Displays an image")
         .nargs(1);
 
-    program.add_argument("-vd", "--video")
+    compv.add_argument("-vd", "--video")
         .help("Displays a video")
         .nargs(1);
 
-    program.add_argument("-wc", "--webcam")
+    compv.add_argument("-wc", "--webcam")
         .help("Displays live webcam")
         .flag();
 #endif
 
-    program.add_argument("-im", "--imatrix")
+    auto num = argparse::ArgumentParser("num", pv);
+    num.add_description("For numerical computation and linear algebra");
+
+    num.add_argument("-im", "--imatrix")
         .help("For matrices (\'A\' * x = B")
         .nargs(9)
         .scan<'g', float>();
 
-    program.add_argument("-b", "--b-vectors")
+    num.add_argument("-b", "--b-vectors")
         .help("For the vectors of matrices (A * x = \'B\'")
         .nargs(3)
         .scan<'g', float>();
+
+#ifdef WITH_OPENCV
+    program.add_subparser(compv);
+#endif
+    program.add_subparser(num);
 
     try{
         program.parse_args(argc, argv);
@@ -44,10 +55,12 @@ auto main(int argc, char** argv) -> int {
         return 1;
     }
 
-    if(program.is_used("--imatrix")){
-        std::vector<double> Mat(program.get<std::vector<float>>("-im").begin(), program.get<std::vector<float>>("-im").end());
+    if(program.is_subcommand_used("num") && num.is_used("-im")){
+        const auto Mat = num.get<std::vector<float>>("-im");
+        std::vector<double> MatD(Mat.begin(), Mat.end());
+
         Eigen::Matrix3d A, A_inv, A_adj, A_trans;
-        A = Eigen::Map<Eigen::Matrix<double, 3, 3, Eigen::RowMajor>>(Mat.data());
+        A = Eigen::Map<Eigen::Matrix<double, 3, 3, Eigen::RowMajor>>(MatD.data());
 
         A_inv = A.inverse();
         A_adj = A.adjoint();
@@ -65,8 +78,13 @@ auto main(int argc, char** argv) -> int {
         std::cout << "\nAdjoint of matrix is: \n" << A_adj << std::endl;
         std::cout << "\nTranspose of matrix is: \n" << A_trans << std::endl;
 
-        if(program.is_used("-b")){
-            Eigen::Vector3d B(std::vector<double>(program.get<std::vector<float>>("-b").begin(), program.get<std::vector<float>>("-b").end()).data()), x;
+        std::cout << "SON\n";
+
+        if(num.is_used("--b-vectors")){
+            const auto tmp = num.get<std::vector<float>>("--b-vectors");
+            std::vector<double> tmpD(tmp.begin(), tmp.end());
+
+            Eigen::Vector3d B(tmpD.data()), x;
             x = A_inv * B;
 
             std::cout << "\nThe x, y, z values are: \n" << x << "\nrespectively" << std::endl;
@@ -75,9 +93,11 @@ auto main(int argc, char** argv) -> int {
     }
 
 #ifdef WITH_OPENCV
-    if(program.is_used("--image")) ImageFn(program.get<std::string>("--image"));
-    if(program.is_used("--video")) VideoFn(program.get<std::string>("--video"));
-    if(program.is_used("--webcam")) WebCamFn();
+    if(program.is_subcommand_used("compvn")){
+        if(compv.is_used("--image")) ImageFn(compv.get<std::string>("--image"));
+        if(compv.is_used("--video")) VideoFn(compv.get<std::string>("--video"));
+        if(compv.is_used("--webcam")) WebCamFn();
+    }
 #endif
 
     return 0;

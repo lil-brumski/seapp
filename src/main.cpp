@@ -1,5 +1,10 @@
 #include "seapp_version.h"
-#include "seapp.hpp"
+#include <argparse/argparse.hpp>
+#include <Eigen/Dense>
+
+#ifdef WITH_OPENCV
+    #include "seapp.hpp"
+#endif
 
 auto main(int argc, char** argv) -> int {
     std::string pv = R"(seapp )"  + std::to_string(seapp_VERSION_MAJOR) + "." + std::to_string(seapp_VERSION_MINOR) + "." + std::to_string(seapp_VERSION_PATCH)
@@ -7,6 +12,7 @@ auto main(int argc, char** argv) -> int {
 
     argparse::ArgumentParser program("seapp", pv);
 
+#ifdef WITH_OPENCV
     program.add_argument("-i", "--image")
         .help("Displays an image")
         .nargs(1);
@@ -18,6 +24,7 @@ auto main(int argc, char** argv) -> int {
     program.add_argument("-wc", "--webcam")
         .help("Displays live webcam")
         .flag();
+#endif
 
     program.add_argument("-im", "--imatrix")
         .help("For matrices (\'A\' * x = B")
@@ -67,9 +74,11 @@ auto main(int argc, char** argv) -> int {
         }
     }
 
+#ifdef WITH_OPENCV
     if(program.is_used("--image")) ImageFn(program.get<std::string>("--image"));
     if(program.is_used("--video")) VideoFn(program.get<std::string>("--video"));
     if(program.is_used("--webcam")) WebCamFn();
+#endif
 
     return 0;
 }

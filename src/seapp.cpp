@@ -1,17 +1,20 @@
 #include "seapp.hpp"
 
-void ImageFn(const std::string& imagePath){
-
+void ImageFn([[maybe_unused]] const std::string& imagePath){
+#ifdef WITH_OPENCV
     cv::Mat image = cv::imread(imagePath);
     cv::imshow("Image bro", image);
 
     cv::waitKey(0);
     cv::destroyAllWindows();
+#else
+    std::cout << "You haven't build WITH_OPENCV and you want to use this function?" << std::endl;
+#endif
 
 }
 
-void VideoFn(std::string video){
-
+void VideoFn([[maybe_unused]] std::string video){
+#ifdef WITH_OPENCV
     cv::VideoCapture vid(video);
     cv::Mat image;
 
@@ -23,10 +26,13 @@ void VideoFn(std::string video){
     }
 
     cv::destroyAllWindows();
+#else
+    std::cout << "You haven't build WITH_OPENCV and you want to use this function?" << std::endl;
+#endif
 }
 
 void WebCamFn(){
-
+#ifdef WITH_OPENCV
     cv::VideoCapture vid(0);
     cv::Mat image;
 
@@ -38,4 +44,7 @@ void WebCamFn(){
     }
 
     cv::destroyAllWindows();
+#else
+    std::cout << "You haven't build WITH_OPENCV and you want to use this function?" << std::endl;
+#endif
 }

@@ -1,9 +1,12 @@
 #ifndef SEAPP_HPP
 #define SEAPP_HPP
 
-#include <opencv2/opencv.hpp>
-#include <argparse/argparse.hpp>
-#include <Eigen/Dense>
+#ifdef WITH_OPENCV
+    #include <opencv2/opencv.hpp>
+#endif
+
+#include <string>
+#include <iostream>
 
 void ImageFn(const std::string& image);
 void VideoFn(std::string video);

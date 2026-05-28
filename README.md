@@ -72,11 +72,49 @@ $ cmake -DWITH_OPENCV=OFF -DWITH_SYSTEM_EIGEN=OFF -DCMAKE_BUILD_TYPE=Release ..
 $ cmake --build . --config Release -j$(nproc)
 ```
 
-Within the build folder and children folders, look for the `seapp` or `seapp.exe` executable and run:
+Within the build folder and its children folders, look for the `seapp` or `seapp.exe` executable and run:
+- Checking application version 
 ```bash
-$ ./seapp --version
-$ ./seapp --help
-$ ./seapp --imatrix 1 1 1   3 3 4   2 1 3 --b-vectors 6 20 13
+    $ ./seapp --version
+    seapp 2026.5.28
+    
+    Written by David Tamaratare Oghenebrume
+```
+
+* Checking for the available commands
+
+Running the `--help` command
+```bash
+    $ ./seapp --help
+    Usage: seapp [--help] [--version] {compvn,num}
+    
+    Optional arguments:
+    -h, --help     shows help message and exits 
+    -v, --version  prints version information and exits 
+    
+    Subcommands:
+    compvn        For computer vision related tasks
+    num           For numerical computation and linear algebra
+```
+
+Running the `compvn --help` command for computer vision  
+
+```bash
+    $ ./seapp compvn --help
+    Usage: seapp compvn [--help] [--version] [--image VAR] [--video VAR] [--webcam]
+    
+    For computer vision related tasks
+    
+    Optional arguments:
+      -h, --help     shows help message and exits 
+      -v, --version  prints version information and exits 
+      -i, --image    Displays an image 
+      -vd, --video   Displays a video 
+      -wc, --webcam  Displays live webcam 
+```
+
+```bash
+$ ./seapp num --imatrix 1 1 1   3 3 4   2 1 3 --b-vectors 6 20 13
 ```
  ---
 

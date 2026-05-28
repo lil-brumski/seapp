@@ -11,7 +11,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(WITH_OPENCV "Build with OpenCV support" OFF)
-option(WITH_SYSTEM_EIGEN "Build with system-installed Eigen3" ON)
+option(WITH_SYSTEM_EIGEN "Build with system-installed Eigen3" OFF)
+
+configure_file(seapp_version.h.in seapp_version.h)
 
 if(WITH_SYSTEM_EIGEN)
         find_package(Eigen3 REQUIRED NO_MODULE)
@@ -34,17 +36,6 @@ else()
         FetchContent_MakeAvailable(Eigen3)
 endif(WITH_SYSTEM_EIGEN)
 
-if(WITH_OPENCV)
-        find_package(OpenCV REQUIRED COMPONENTS core imgproc highgui)
-        target_compile_definitions(${PROJECT_NAME} PRIVATE WITH_OPENCV)
-        target_link_libraries(${PROJECT_NAME}
-                PRIVATE
-                opencv_core
-                opencv_imgproc
-                opencv_highgui
-        )
-endif()
-
 add_subdirectory(third_party/argparse)
 
 set(SAN_FLAGS "-fsanitize=address,undefined")
@@ -54,7 +45,17 @@ add_executable(${PROJECT_NAME}
         src/seapp.cpp
 )
 
-configure_file(seapp_version.h.in seapp_version.h)
+if(WITH_OPENCV)
+        find_package(OpenCV REQUIRED COMPONENTS core imgproc highgui)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC "WITH_OPENCV")
+        target_link_libraries(${PROJECT_NAME}
+                PRIVATE
+                opencv_core
+                opencv_imgproc
+                opencv_highgui
+        )
+        message(NOTICE "Building with OpenCV support right now...")
+endif(WITH_OPENCV)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wextra -Wshadow -Wconversion -Wpedantic)

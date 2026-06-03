@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.3)
 
 project(seapp
-        VERSION 2026.5.28
+        VERSION 2026.6.3
         LANGUAGES CXX
         DESCRIPTION "For Learning!"
 )
@@ -42,7 +42,7 @@ set(SAN_FLAGS "-fsanitize=address,undefined")
 
 add_executable(${PROJECT_NAME}
         src/main.cpp
-        src/seapp.cpp
+        src/seapp_opencv.cpp
 )
 
 if(WITH_OPENCV)

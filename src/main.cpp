@@ -3,7 +3,7 @@
 #include <Eigen/Dense>
 
 #ifdef WITH_OPENCV
-    #include "seapp.hpp"
+    #include "seapp_opencv.hpp"
 #endif
 
 auto main(int argc, char** argv) -> int {
@@ -13,23 +13,25 @@ auto main(int argc, char** argv) -> int {
     argparse::ArgumentParser program("seapp", pv);
 
 #ifdef WITH_OPENCV
-    auto compv = argparse::ArgumentParser("compvn", pv);
+    auto compv = argparse::ArgumentParser("compvn");
+    auto& compvg = compv.add_mutually_exclusive_group(true);
+
     compv.add_description("For computer vision related tasks");
 
-    compv.add_argument("-i", "--image")
+    compvg.add_argument("-i", "--image")
         .help("Displays an image")
         .nargs(1);
 
-    compv.add_argument("-vd", "--video")
+    compvg.add_argument("-vd", "--video")
         .help("Displays a video")
         .nargs(1);
 
-    compv.add_argument("-wc", "--webcam")
+    compvg.add_argument("-wc", "--webcam")
         .help("Displays live webcam")
         .flag();
 #endif
 
-    auto num = argparse::ArgumentParser("num", pv);
+    auto num = argparse::ArgumentParser("num");
     num.add_description("For numerical computation and linear algebra");
 
     num.add_argument("-im", "--imatrix")
@@ -95,8 +97,8 @@ auto main(int argc, char** argv) -> int {
 #ifdef WITH_OPENCV
     if(program.is_subcommand_used("compvn")){
         if(compv.is_used("--image")) ImageFn(compv.get<std::string>("--image"));
-        if(compv.is_used("--video")) VideoFn(compv.get<std::string>("--video"));
-        if(compv.is_used("--webcam")) WebCamFn();
+        else if(compv.is_used("--video")) VideoFn(compv.get<std::string>("--video"));
+        else if(compv.is_used("--webcam")) WebCamFn();
     }
 #endif
 

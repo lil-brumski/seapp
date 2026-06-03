@@ -1,4 +1,4 @@
-#include "seapp.hpp"
+#include "seapp_opencv.hpp"
 
 void ImageFn([[maybe_unused]] const std::string& imagePath){
 #ifdef WITH_OPENCV

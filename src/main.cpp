@@ -32,19 +32,28 @@ auto main(int argc, char** argv) -> int {
     compvn_image.add_description("Image-only Computer Vision");
     compvn_image.add_epilog("Written by David Tamaratare Oghenebrume");
 
-    auto& compvn_image_group = compvn_image.add_mutually_exclusive_group(true);
-
-    compvn_image_group.add_argument("-f", "--file")
+    compvn_image.add_argument("-f", "--file")
         .help("Displays an image")
-        .nargs(1);
+        .nargs(1)
+        .required();
 
+    //auto& compvn_image_group_for_just_file_path = compvn_image.add_mutually_exclusive_group(true);
+    auto& compvn_image_group = compvn_image.add_mutually_exclusive_group(false);
     compvn_image_group.add_argument("-gs", "--grayscale")
-        .help("Displays a grayscale image")
-        .nargs(1);
+        .help("Displays a grayscale image [flag]")
+        .flag();
 
     compvn_image_group.add_argument("-gb", "--gaussian-blur")
-        .help("Displays a gaussian blur image")
-        .nargs(1);
+        .help("Displays a gaussian blur image [flag]")
+        .flag();
+
+    std::vector<int> imageResized;
+    compvn_image_group.add_argument("-r", "--resize")
+        .help("Resizes image")
+        .nargs(2)
+        .append()
+        .scan<'i', int>()
+        .store_into(imageResized);
 
     compv.add_subparser(compvn_image);
 
@@ -117,9 +126,15 @@ auto main(int argc, char** argv) -> int {
 #ifdef WITH_OPENCV
     if(program.is_subcommand_used("compvn")){
         if(compv.is_subcommand_used("image")){
-            if(compvn_image.is_used("--file")) ImageFn(compvn_image.get<std::string>("--file"));
-            else if(compvn_image.is_used("--grayscale")) GrayScaleImageFn(compvn_image.get<std::string>("--grayscale"));
-            else if(compvn_image.is_used("--gaussian-blur")) GaussianBlurImageFn(compvn_image.get<std::string>("--gaussian-blur"));
+            if(compvn_image.is_used("--file") &&
+               !compvn_image.is_used("--grayscale") &&
+               !compvn_image.is_used("--gaussian-blur") &&
+               !compvn_image.is_used("--resize")
+            ) ImageFn(compvn_image.get<std::string>("--file"));
+
+            else if(/*compvn_image.is_used("--file") &&*/ compvn_image.is_used("--grayscale")) GrayScaleImageFn(compvn_image.get<std::string>("--file"));
+            else if(/*compvn_image.is_used("--file") &&*/ compvn_image.is_used("--gaussian-blur")) GaussianBlurImageFn(compvn_image.get<std::string>("--file"));
+            else if(/*compvn_image.is_used("--file") &&*/ compvn_image.is_used("--resize")) ResizeImageFn(compvn_image.get<std::string>("--file"), imageResized);
         }
 
         else if(compv.is_used("--video")) VideoFn(compv.get<std::string>("--video"));

@@ -28,10 +28,29 @@ void GrayScaleImageFn([[maybe_unused]] const std::string& imagePath){
 #endif
 }
 
+void ResizeImageFn(const std::string& imagePath, const std::vector<int>& imageSize){
+#ifdef WITH_OPENCV
+    cv::Mat image = cv::imread(imagePath);
+    cv::Mat newSize;
+
+    std::cout << imageSize.size() << std::endl;
+
+    cv::resize(image, newSize, cv::Size(imageSize[0], imageSize[1]));
+    cv::imshow("New Image Size", newSize);
+
+    cv::waitKey(0);
+    cv::destroyAllWindows();
+#else
+    std::cout << "You haven't build WITH_OPENCV and you want to use this function?" << std::endl;
+#endif
+}
+
 void GaussianBlurImageFn([[maybe_unused]] const std::string& imagePath){
 #ifdef WITH_OPENCV
     cv::Mat image = cv::imread(imagePath);
     cv::Mat gaussianBlurImage, cannyImage, dilateImage, erodeImage;
+
+    std::cout << "Image size: " << image.size() << std::endl;
 
     cv::GaussianBlur(image, gaussianBlurImage, cv::Size(7, 7), 5, 0);
     cv::imshow("Blurred image", gaussianBlurImage);

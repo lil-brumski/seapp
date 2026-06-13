@@ -11,6 +11,7 @@
 void ImageFn(const std::string& image);
 void GrayScaleImageFn(const std::string& image);
 void GaussianBlurImageFn(const std::string& imagePath);
+void ResizeImageFn(const std::string& imagePath, const std::vector<int>& imageSize);
 void VideoFn(std::string video);
 void WebCamFn();
 

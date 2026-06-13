@@ -7,32 +7,52 @@
 #endif
 
 auto main(int argc, char** argv) -> int {
-    std::string pv = R"(seapp )"  + std::to_string(seapp_VERSION_MAJOR) + "." + std::to_string(seapp_VERSION_MINOR) + "." + std::to_string(seapp_VERSION_PATCH)
-            + "\n\n" + R"(Written by David Tamaratare Oghenebrume)";
+    std::string pv = R"(seapp )"  + std::to_string(seapp_VERSION_MAJOR) + "." + std::to_string(seapp_VERSION_MINOR) + "." + std::to_string(seapp_VERSION_PATCH);
 
     argparse::ArgumentParser program("seapp", pv);
+    program.add_description("A free application for Computer Vision and Numerical Computation");
+    program.add_epilog("Written by David Tamaratare Oghenebrume");
 
 #ifdef WITH_OPENCV
     auto compv = argparse::ArgumentParser("compvn");
-    auto& compvg = compv.add_mutually_exclusive_group(true);
+    auto& compv_group = compv.add_mutually_exclusive_group(false);
 
     compv.add_description("For computer vision related tasks");
+    compv.add_epilog("Written by David Tamaratare Oghenebrume");
 
-    compvg.add_argument("-i", "--image")
-        .help("Displays an image")
-        .nargs(1);
-
-    compvg.add_argument("-vd", "--video")
+    compv_group.add_argument("-vd", "--video")
         .help("Displays a video")
         .nargs(1);
 
-    compvg.add_argument("-wc", "--webcam")
+    compv_group.add_argument("-wc", "--webcam")
         .help("Displays live webcam")
         .flag();
+
+    auto compvn_image = argparse::ArgumentParser("image");
+    compvn_image.add_description("Image-only Computer Vision");
+    compvn_image.add_epilog("Written by David Tamaratare Oghenebrume");
+
+    auto& compvn_image_group = compvn_image.add_mutually_exclusive_group(true);
+
+    compvn_image_group.add_argument("-f", "--file")
+        .help("Displays an image")
+        .nargs(1);
+
+    compvn_image_group.add_argument("-gs", "--grayscale")
+        .help("Displays a grayscale image")
+        .nargs(1);
+
+    compvn_image_group.add_argument("-gb", "--gaussian-blur")
+        .help("Displays a gaussian blur image")
+        .nargs(1);
+
+    compv.add_subparser(compvn_image);
+
 #endif
 
     auto num = argparse::ArgumentParser("num");
     num.add_description("For numerical computation and linear algebra");
+    num.add_epilog("Written by David Tamaratare Oghenebrume");
 
     num.add_argument("-im", "--imatrix")
         .help("For matrices (\'A\' * x = B")
@@ -96,7 +116,12 @@ auto main(int argc, char** argv) -> int {
 
 #ifdef WITH_OPENCV
     if(program.is_subcommand_used("compvn")){
-        if(compv.is_used("--image")) ImageFn(compv.get<std::string>("--image"));
+        if(compv.is_subcommand_used("image")){
+            if(compvn_image.is_used("--file")) ImageFn(compvn_image.get<std::string>("--file"));
+            else if(compvn_image.is_used("--grayscale")) GrayScaleImageFn(compvn_image.get<std::string>("--grayscale"));
+            else if(compvn_image.is_used("--gaussian-blur")) GaussianBlurImageFn(compvn_image.get<std::string>("--gaussian-blur"));
+        }
+
         else if(compv.is_used("--video")) VideoFn(compv.get<std::string>("--video"));
         else if(compv.is_used("--webcam")) WebCamFn();
     }

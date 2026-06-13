@@ -9,6 +9,8 @@
 #include <iostream>
 
 void ImageFn(const std::string& image);
+void GrayScaleImageFn(const std::string& image);
+void GaussianBlurImageFn(const std::string& imagePath);
 void VideoFn(std::string video);
 void WebCamFn();
 
